@@ -7,6 +7,12 @@ const UserSchema = new mongoose.Schema(
     password: { type: "string", require: true },
     firstName: { type: "string" },
     lastName: { type: "string" },
+    posts: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Post",
+      },
+    ],
   },
   {
     collection: "users",

@@ -1,0 +1,48 @@
+version: "3.9"
+
+services:
+  posts-srv-app:
+    build:
+      context: ./post-service
+      dockerfile: Dockerfile
+    container_name: posts-srv-app
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+    volumes:
+      - ./post-service:/usr/src/app
+      - ./post-service/node_modules:/usr/src/app/node_modules
+    environment:
+      NODE_ENV: development
+    depends_on:
+      - stackoverflow-redis
+    networks:
+      - sw-net
+
+  
+  stackoverflow-redis:
+    image: redis:latest
+    container_name: stackoverflow-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    logging:
+      driver: "none"
+    networks:
+      - sw-net
+
+  redis-monitor:
+    image: rediscommander/redis-commander:latest
+    container_name: redis-monitor
+    restart: unless-stopped
+    ports:
+      - "8001:8081"
+    environment:
+      - REDIS_HOSTS=local:stackoverflow-redis:6379
+    networks:
+      - sw-net
+
+networks:
+    sw-net:
+      name: sw-net
+      driver: bridge
