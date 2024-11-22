@@ -98,7 +98,7 @@ exports.getAllPosts = async (req, res) => {
 };
 
 exports.getPostById = async (req, res) => {
-  const { postId } = req.params;
+  const { postId } = req.query;
 
   if (!postId) {
     return res.status(400).send({ message: "Post ID is required." });
