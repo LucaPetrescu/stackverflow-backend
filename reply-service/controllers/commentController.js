@@ -22,17 +22,15 @@ exports.commentToPost = async (req, res) => {
       res.status(400).send({ message: "User ID is required" });
     }
 
-    const comment = Comment.create({ postId, userId, content });
+    const comment = await Comment.create({ postId, userId, content });
 
-    console.log(
-      await axios.patch(
-        `http://posts-srv-app:7001/post/addCommentToPost`,
-        { commentId: comment._id },
-        {
-          params: { postId },
-          headers: { Authorization: "Bearer " + token },
-        }
-      )
+    await axios.patch(
+      `http://posts-srv-app:7001/post/addCommentToPost`,
+      { commentId: comment._id },
+      {
+        params: { postId },
+        headers: { Authorization: "Bearer " + token },
+      }
     );
 
     res

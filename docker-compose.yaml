@@ -17,6 +17,7 @@ services:
       NODE_ENV: development
     depends_on:
       - stackoverflow-redis
+      - rabbitmq
     networks:
       - sw-net
 
@@ -53,6 +54,7 @@ services:
       NODE_ENV: development
     depends_on:
       - stackoverflow-redis
+      - rabbitmq
     networks:
       - sw-net
 

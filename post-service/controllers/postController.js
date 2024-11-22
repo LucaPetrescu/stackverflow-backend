@@ -1,5 +1,6 @@
 const Post = require("../models/Post");
 const Redis = require("ioredis");
+const { createProducer } = require("../rabbitmq/producer");
 
 const redis = new Redis({
   host: "stackoverflow-redis",
@@ -21,6 +22,8 @@ exports.createPost = async (req, res) => {
 
     const post = await Post.create({ userId, title, content });
 
+    await createProducer("Hello");
+
     res.status(201).send({ message: "Post created", post: post });
   } catch (error) {
     res
@@ -30,10 +33,10 @@ exports.createPost = async (req, res) => {
 };
 
 exports.addCommentToPost = async (req, res) => {
-  const postId = req.query.postId;
-  console.log(postId);
   try {
+    const postId = req.query.postId;
     const { commentId } = req.body;
+
     if (!commentId || !postId) {
       return res
         .status(400)
