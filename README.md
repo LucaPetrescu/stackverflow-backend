@@ -193,7 +193,11 @@ This is handled by the Post Service in the ```/upvote``` and ```/downvote``` end
 
 ##### 5. Users should be able to see top k ranking posts
 
+There are multiple ways of building a Top K Posts Service. It can be considered as a totally separate system design problem, but we will tackle it anyways. 
+
 TBD -> Use Mongo aggregation pipelines. You can have a service that runs at a certain interval to run this pipeline and cache the data.
+
+To query the database at a certain interval of time, we can use a cron job that runs at a certain time interval (10 minutes would be okay).
 
 ##### 6. Users should be able to see details of selected questions
 
@@ -207,7 +211,9 @@ This is the authentication/authorization logic we have been talking about in the
 
 This is done by using a combination between queueying solutions and real-time communication (WebSockets, SSE etc)
 
-When a user posts a new question or answers a question, the update will be pushed to a queue (most probably RabbitMQ). Here, the events will be consumed by a service that is always on the watch for new events created in the queue. The service will get the events form the queue and establish a WebScocket connection with the client to send the updates. This can also be done with Server Side Events.
+When a user posts a new question or answers a question, the update will be pushed to a queue (most probably RabbitMQ). Here, the events will be consumed by a service that is always on the watch for new events created in the queue. The service will get the events form the queue and establish a WebScocket connection with the client to send the updates. This can also be done with Server Sent Events.
+
+### Deep Dives
 
 ##### The application should scale up to 
 
