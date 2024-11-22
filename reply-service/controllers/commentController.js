@@ -24,13 +24,15 @@ exports.commentToPost = async (req, res) => {
 
     const comment = Comment.create({ postId, userId, content });
 
-    await axios.patch(
-      `http://posts-srv-app:7001/post/addCommentToPost`,
-      { commentId: comment._id },
-      {
-        params: { postId },
-        headers: { Authorization: "Bearer " + token },
-      }
+    console.log(
+      await axios.patch(
+        `http://posts-srv-app:7001/post/addCommentToPost`,
+        { commentId: comment._id },
+        {
+          params: { postId },
+          headers: { Authorization: "Bearer " + token },
+        }
+      )
     );
 
     res
