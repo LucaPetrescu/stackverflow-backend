@@ -8,5 +8,10 @@ router.post("/upvotePost", authMiddleware, postController.upvotePost);
 router.post("/downvotePost", authMiddleware, postController.downvotePost);
 router.get("/getAllPosts", authMiddleware, postController.getAllPosts);
 router.get("/getPostById", authMiddleware, postController.getPostById);
+router.patch(
+  "/addCommentToPost",
+  authMiddleware,
+  postController.addCommentToPost
+);
 
 module.exports = router;

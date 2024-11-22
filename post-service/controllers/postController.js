@@ -21,11 +21,36 @@ exports.createPost = async (req, res) => {
 
     const post = await Post.create({ userId, title, content });
 
-    res.status(201).send(post);
+    res.status(201).send({ message: "Post created", post: post });
   } catch (error) {
     res
       .status(500)
       .send({ message: "Error creating post", error: error.message });
+  }
+};
+
+exports.addCommentToPost = async (req, res) => {
+  try {
+    const { commentId } = req.body;
+    const postId = req.query.postId;
+    if (!commentId || !postId) {
+      return res
+        .status(400)
+        .send({ message: "Comment ID and Post ID are required" });
+    }
+
+    const post = await Post.findByIdAndUpdate(
+      postId,
+      { $push: { comments: commentId } },
+      { new: true }
+    );
+
+    if (!post) {
+      return res.status(404).send({ message: "Post not found" });
+    }
+    res.status(200).send({ message: "Comment added to post", post });
+  } catch (error) {
+    res.status(500).send({ message: "Error adding comment to post" });
   }
 };
 

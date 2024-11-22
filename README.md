@@ -3,9 +3,14 @@
 In the developed code, most of the components are not present since it is a code written for demonstrative purposes and adding all the elements and services in this design will be very time consuming, overwhelming and will not lead to anywhere.
 
 This approach reflects my way of thinking when faced with a system design problem.
+
+However, explanaitions about how I wrote the code and the approaches I've taken are provided in this document.
+
+References are provided at the end of the document.
+
 ### Functional requirements
 
-1. Users should be to create an account and login
+1. Users should be able to create an account and login
 2. Users should be able to create posts
 3. Users should be able to answer questions
 4. Users should be able to upvote or downvote questions
@@ -142,6 +147,17 @@ POST /post/upvote/{postId} {
 ```
 
 ```
+POST /post/downvote/{postId} {
+	Authorization: Bearer <access_token>
+} -> {
+	Success 200
+		
+} | {
+	Unauthorized 401
+}
+```
+
+```
 GET /post/getAllPosts {
 	Authrotization: Bearer <access_token>
 } -> {
@@ -150,6 +166,36 @@ GET /post/getAllPosts {
 	Unauthorized 401
 }
 ```
+
+##### 1. Users should be able to create an account and log in
+
+	The approach here is pretty straightforward. In the high-level design, the user is routed via the API Gateway to the User Service, which also handles the authentication and authorization logic. Here, the user creates an account or logs in. From here, he or she will be able to access the other routes and services of the application. 
+	
+	To make sure the user is authenticated, an approach with JWT was used in the code. 
+
+	For implementing the API Gateway in my code, I have used NGINX. Also, features like rate limiting for preventing system overwhelming were provided. More on that later.
+
+##### 2. Users should be able to create posts
+
+	The user post creation is handled by the Post Service. Here, the user can create, upvote, downvote, see all the posts and get a certain post. As mentioned earlier, and also provided in the Functional Rquirements, the user cannot interact with this service unless it is authenticated. 
+	
+	For handling high reads without querying the Database everytime the user requests a certain post, I have implemented a caching solution with Redis. In the Redis Cache, posts will be stored with a TTL, so later if the user will request to see the same post (maybe he checks a post from 5 to 5 minutes to see the latest comments), the database will not need to be queried. 
+
+##### 3. Users should be able to reply to a post (answer questions)
+
+	This is handle by the Reply Service. Everytime the user wants to answer a question, the Post Service will take care of that. It will also write the response to the DB. Also, a Post entry will keep an array of replies IDs to keep track of the replies from that specific post.
+
+##### 4. Users should be able to upvote or downvote posts
+
+	This is handled by the Post Service in the ```/upvote``` and ```/downvote``` endpoints. Also, these endpoints will not be available unless the user is authenticated.
+
+##### 5. Users should be able to see top k ranking posts
+
+	TBD
+
+##### 6. Users should be able to see details of selected questions
+
+	
 
 ### References
 
