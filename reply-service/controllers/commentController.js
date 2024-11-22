@@ -1,5 +1,6 @@
 const axios = require("axios");
 const Comment = require("../models/Comment");
+const { createProducer } = require("../rabbitmq/producer");
 
 exports.commentToPost = async (req, res) => {
   try {
@@ -23,6 +24,11 @@ exports.commentToPost = async (req, res) => {
     }
 
     const comment = await Comment.create({ postId, userId, content });
+
+    await createProducer({
+      message: `User with id ${userId} commented on the post`,
+      post,
+    });
 
     await axios.patch(
       `http://posts-srv-app:7001/post/addCommentToPost`,

@@ -22,7 +22,7 @@ exports.createPost = async (req, res) => {
 
     const post = await Post.create({ userId, title, content });
 
-    await createProducer("Hello");
+    await createProducer(post);
 
     res.status(201).send({ message: "Post created", post: post });
   } catch (error) {
@@ -48,13 +48,12 @@ exports.addCommentToPost = async (req, res) => {
       { $push: { comments: commentId } },
       { new: true }
     );
-    console.log("comentariu 0");
 
     if (!post) {
       return res.status(404).send({ message: "Post not found" });
     }
     res.status(200).send({ message: "Comment added to post", post });
-    console.log("comentariu");
+
     return;
   } catch (error) {
     res.status(500).send({ message: "Error adding comment to post" });
@@ -78,6 +77,8 @@ exports.upvotePost = async (req, res) => {
     post.upvotes = (post.upvotes || 0) + 1;
 
     await post.save();
+
+    await createProducer({ message: "Post upvoted", post });
 
     res.status(200).send({ message: "Post upvoted successfully", post });
   } catch (error) {
@@ -104,6 +105,8 @@ exports.downvotePost = async (req, res) => {
     post.downvotes = (post.downvotes || 0) + 1;
 
     await post.save();
+
+    await createProducer({ messgae: "Post downvoted", post });
 
     res.status(200).send({ message: "Post downvoted successfully", post });
   } catch (error) {
