@@ -193,7 +193,7 @@ GET /post/getAllPosts {
 
 ##### 5. Users should be able to see top k ranking posts
 
-	TBD
+	TBD -> Use Mongo aggregation pipelines. You can have a service that runs at a certain interval to run this pipeline and cache the data.
 
 ##### 6. Users should be able to see details of selected questions
 

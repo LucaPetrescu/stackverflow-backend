@@ -7,6 +7,9 @@ exports.commentToPost = async (req, res) => {
     const postId = req.query.postId;
     const userId = req.user.userId;
 
+    const authHeader = req.headers["authorization"];
+    const token = authHeader.split(" ")[1];
+
     if (!content) {
       return res.status(400).send({ message: "Content is required" });
     }
@@ -21,17 +24,14 @@ exports.commentToPost = async (req, res) => {
 
     const comment = Comment.create({ postId, userId, content });
 
-    try {
-      await axios.patch(
-        `http://posts-srv-app:7001/post/addCommentToPost/${postId}`,
-
-        { commentId: comment._id }
-      );
-    } catch (error) {
-      res
-        .status(500)
-        .send({ message: "Error creating comment", error: error.message });
-    }
+    await axios.patch(
+      `http://posts-srv-app:7001/post/addCommentToPost`,
+      { commentId: comment._id },
+      {
+        params: { postId },
+        headers: { Authorization: "Bearer " + token },
+      }
+    );
 
     res
       .status(201)

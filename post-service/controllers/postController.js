@@ -30,9 +30,10 @@ exports.createPost = async (req, res) => {
 };
 
 exports.addCommentToPost = async (req, res) => {
+  const postId = req.query.postId;
+  console.log(postId);
   try {
     const { commentId } = req.body;
-    const postId = req.query.postId;
     if (!commentId || !postId) {
       return res
         .status(400)
@@ -44,11 +45,14 @@ exports.addCommentToPost = async (req, res) => {
       { $push: { comments: commentId } },
       { new: true }
     );
+    console.log("comentariu 0");
 
     if (!post) {
       return res.status(404).send({ message: "Post not found" });
     }
     res.status(200).send({ message: "Comment added to post", post });
+    console.log("comentariu");
+    return;
   } catch (error) {
     res.status(500).send({ message: "Error adding comment to post" });
   }

@@ -18,7 +18,7 @@ const authenticateToken = (req, res, next) => {
 
     const user = jwt.verify(token, secretKey);
 
-    req.user = { id: user.id };
+    req.user = { userId: user.id };
     next();
   } catch (err) {
     console.error("Error in token authentication middleware:", err);
