@@ -7,9 +7,9 @@ router.post("/createPost", authMiddleware, postController.createPost);
 router.post("/upvotePost", authMiddleware, postController.upvotePost);
 router.post("/downvotePost", authMiddleware, postController.downvotePost);
 router.get("/getAllPosts", authMiddleware, postController.getAllPosts);
-router.get("/getPostById", authMiddleware, postController.getPostById);
+router.get("/getPostById/:postId", authMiddleware, postController.getPostById);
 router.patch(
-  "/addCommentToPost",
+  "/addCommentToPost/:postId",
   authMiddleware,
   postController.addCommentToPost
 );

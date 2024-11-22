@@ -1,3 +1,4 @@
+const axios = require("axios");
 const Comment = require("../models/Comment");
 
 exports.commentToPost = async (req, res) => {
@@ -19,6 +20,18 @@ exports.commentToPost = async (req, res) => {
     }
 
     const comment = Comment.create({ postId, userId, content });
+
+    try {
+      await axios.patch(
+        `http://posts-srv-app:7001/post/addCommentToPost/${postId}`,
+
+        { commentId: comment._id }
+      );
+    } catch (error) {
+      res
+        .status(500)
+        .send({ message: "Error creating comment", error: error.message });
+    }
 
     res
       .status(201)

@@ -27,6 +27,8 @@ References are provided at the end of the document.
 
 ### High-Level Design
 
+**Note:** If the picture is not loading, I have included it in the project root directory. See design_stackoverflow.jpg
+
 ![[design_stackoverflow.jpg]]
 
 ### Entities
@@ -183,7 +185,7 @@ GET /post/getAllPosts {
 
 ##### 3. Users should be able to reply to a post (answer questions)
 
-	This is handle by the Reply Service. Everytime the user wants to answer a question, the Post Service will take care of that. It will also write the response to the DB. Also, a Post entry will keep an array of replies IDs to keep track of the replies from that specific post.
+	This is handled by the Reply Service. Everytime the user wants to answer a question, the Post Service will take care of that. It will also write the response to the DB. Also, a Post entry will keep an array of replies IDs to keep track of the replies from that specific post.
 
 ##### 4. Users should be able to upvote or downvote posts
 
@@ -195,7 +197,19 @@ GET /post/getAllPosts {
 
 ##### 6. Users should be able to see details of selected questions
 
-	
+	Here, the user can see a certain question. It ca see the details of that question: The question itself, replies, upvotes/downvotes etc.
+
+##### 7. Users should not be able to post or answer questions if they are not authenticated
+
+	This is the authentication/authorization logic we have been talking about in the begining. Basically, users will not be able to interact with certain endpoints unless they are authenticated. This is done by the user logging in and recieving an access token. This is done by leveraging JWT. On the enpoints that interact with the posts and comments, users will need to have the access token in the Authorization Header in order to be able to make certain operations. The token is checked by an authorization middleware which is included in every of the services that interacts with the posts. The middleware gets the token from the header and checks it. If the token is valid, than the user can post, comment, upvote or downvote questions.
+
+##### 8. Users should be able to see real time updates
+
+	This is done by using a combination between queueying solutions and real-time communication (WebSockets, SSE etc)
+
+	When a user posts a new question or answers a question, the update will be pushed to a queue (most probably RabbitMQ). Here, the events will be consumed by a service that is always on the watch for new events created in the queue. The service will get the events form the queue and establish a WebScocket connection with the client to send the updates. This can also be done with Server Side Events.
+
+##### The application should scale up to 
 
 ### References
 
