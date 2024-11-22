@@ -33,3 +33,5 @@ async function startConsumer() {
     console.error(`Error in consumer: ${err.message}`);
   }
 }
+
+module.exports = { startConsumer };
