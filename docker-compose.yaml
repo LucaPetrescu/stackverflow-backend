@@ -2,6 +2,24 @@ version: "3.9"
 
 services:
 
+  reply-srv-app:
+    build:
+      context: ./reply-service
+      dockerfile: Dockerfile
+    container_name: reply-srv-app
+    ports:
+      - "7002:7002"
+    restart: unless-stopped
+    volumes:
+      - ./reply-service:/usr/src/app
+      - ./reply-service/node_modules:/usr/src/app/node_modules
+    environment:
+      NODE_ENV: development
+    depends_on:
+      - stackoverflow-redis
+    networks:
+      - sw-net
+
   auth-srv-app:
     build:
       context: ./auth-service
