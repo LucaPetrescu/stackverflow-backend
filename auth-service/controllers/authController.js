@@ -1,5 +1,4 @@
-const mongoose = require("mongoose");
-const User = require("../model/user");
+const User = require("../models/User");
 
 const {
   encryptPassword,
@@ -9,8 +8,11 @@ const {
 const {
   accessToken,
   refreshToken,
-  accessToken,
+  verifyRefreshToken,
+  verifyAccessToken,
 } = require("../JWT/jwt-helpers");
+
+const days = 225892000;
 
 exports.registerUser = async (req, res) => {
   try {
@@ -32,17 +34,79 @@ exports.registerUser = async (req, res) => {
       lastName: lastName,
     });
 
-    const accessToken = accessToken(newUser.id, newUser.username);
+    res.cookie("access-token", token, {
+      expires: new Date(Date.now() + days),
+      httpOnly: true,
+    });
 
-    res.status(201).send({ accessToken });
+    const token = accessToken(newUser._id, newUser.username);
+
+    //I know the access token is already being sent to the Authorization header,
+    // but since this is a demo app, it will be much easier for me to handle it like this
+
+    res.status(201).send({ token, newUser });
   } catch (e) {
-    res.status(500).send(e);
+    res.status(500).send(e.message);
   }
 };
 
 exports.loginUser = async (req, res) => {
   try {
-    const { email, password } = req.body();
+    const { email, password } = req.body;
     const foundUser = await User.findOne({ email });
-  } catch (e) {}
+
+    if (!foundUser) {
+      res.status(404).send({ message: "User not found" });
+    }
+
+    if (!checkPassword(password, foundUser.password)) {
+      res.status(404).send({ message: "Incorrect email or password" });
+    }
+
+    const token = accessToken(foundUser.id, foundUser.username);
+
+    res.cookie("access-token", token, {
+      expires: new Date(Date.now() + days),
+      httpOnly: true,
+    });
+
+    //I know the access token is already being sent to the Authorization header,
+    // but since this is a demo app, it will be much easier for me to handle it like this
+
+    return res.status(200).send(token);
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+};
+
+exports.getProfile = async (req, res) => {
+  try {
+    const authHeader = req.headers["authorization"];
+
+    if (!authHeader) {
+      return res
+        .status(401)
+        .send({ message: "Authorization header is missing" });
+    }
+
+    const token = authHeader.split(" ")[1];
+
+    if (!token) {
+      return res.status(401).send({ message: "Token is missing" });
+    }
+
+    const userFromToken = accessToken(token);
+
+    const userid = userFromToken.id;
+
+    const foundUser = await User.findOne(userid);
+
+    if (!foundUser) {
+      res.status(404).send({ message: "Something went wrong" });
+    }
+
+    return res.status(200).send(foundUser);
+  } catch (e) {
+    res.status(500).send(err);
+  }
 };

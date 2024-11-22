@@ -1,13 +1,32 @@
 version: "3.9"
 
 services:
+
+  auth-srv-app:
+    build:
+      context: ./auth-service
+      dockerfile: Dockerfile
+    container_name: auth-srv-app
+    ports:
+      - "7000:7000"
+    restart: unless-stopped
+    volumes:
+      - ./auth-service:/usr/src/app
+      - ./auth-service/node_modules:/usr/src/app/node_modules
+    environment:
+      NODE_ENV: development
+    depends_on:
+      - stackoverflow-redis
+    networks:
+      - sw-net
+
   posts-srv-app:
     build:
       context: ./post-service
       dockerfile: Dockerfile
     container_name: posts-srv-app
     ports:
-      - "3000:3000"
+      - "7001:7001"
     restart: unless-stopped
     volumes:
       - ./post-service:/usr/src/app
@@ -19,7 +38,6 @@ services:
     networks:
       - sw-net
 
-  
   stackoverflow-redis:
     image: redis:latest
     container_name: stackoverflow-redis
@@ -39,6 +57,16 @@ services:
       - "8001:8081"
     environment:
       - REDIS_HOSTS=local:stackoverflow-redis:6379
+    networks:
+      - sw-net
+
+  api-gateway:
+    image: nginx:latest
+    container_name: api-gateway
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "80:80"
     networks:
       - sw-net
 

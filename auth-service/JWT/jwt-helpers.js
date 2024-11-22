@@ -1,4 +1,4 @@
-const jwt = require("jswonwebtoken");
+const jwt = require("jsonwebtoken");
 
 const accessOptions = {
   expiresIn: "10m",

@@ -38,7 +38,7 @@ POST /auth/register {
 	first_name
 	last_name
 } -> {
-	Created 200
+	Created 201
 	auth_token
 	}
 ```
