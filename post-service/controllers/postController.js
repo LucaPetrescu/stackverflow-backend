@@ -152,15 +152,20 @@ exports.getPostById = async (req, res) => {
 
     const post = await Post.findById(postId);
 
-    const comments = await Comment.find({ _id: { $in: post.comments } });
+    const comments = await Comment.find({ _id: { $in: post.comments } }).lean();
 
-    const formattedComments = comments.map((comment) => ({
-      _id: comment._id,
-      content: comment.content,
-      userId: comment.userId,
-    }));
+    const commentsFromThePost = [];
 
-    post.comments = formattedComments;
+    for (let i = 0; i < comments.length; i++) {
+      let newCommentElement = {
+        _id: comments[i]._id,
+        userId: comments[i].userId,
+        postId: comments[i].postId,
+        content: comments[i].content,
+      };
+
+      commentsFromThePost.push(newCommentElement);
+    }
 
     if (!post) {
       return res.status(404).send({ message: "Post not found." });
@@ -168,9 +173,11 @@ exports.getPostById = async (req, res) => {
 
     await redis.set(postId, JSON.stringify(post), "EX", 3600);
 
-    return res
-      .status(200)
-      .send({ message: "Post retrieved from database and cached", post });
+    return res.status(200).send({
+      message: "Post retrieved from database and cached",
+      post,
+      commentsFromThePost,
+    });
   } catch (error) {
     return res
       .status(500)
