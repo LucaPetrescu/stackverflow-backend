@@ -242,6 +242,14 @@ Another way to think about high throughput, would be the use of a Rate Limiter. 
 
 In my approach, I have used NGINX for implementing an API Gateway and also Rate Limiting.
 
+#### How can we handle updates without shutting down the whole system?
+
+One of the most commonly used technique in updating software as it runs is using the Rolling Updates technique. What this means, is that whenever an update is released for a software application, new versions of an application or service are deployed incrementally across instances or nodes, replacing older versions one at a time. This ensures there is no downtime and that some instances of the old version remain active while the new version is rolled out.
+
+Using docker to run multiple containers will be very helpful in this approach, since in fact, rolling updates align well with the core principles of microservice architectures.
+
+In out application, we have more microservices that run accros a network. Let's say we want to deploy a new update for the version for the authentication service. Say we have 3 instances of thi service running. Firstly, we will stop the first instance from serving any traffic. We will update this instance, test it to see if it runs correcnt and if it is able to recieve any traffic, and after that integrate it back to the pool of services that serve traffic. The same process will hapen for the next running insances of the service.
+
 ## References
 
 1. Evan King, Stefan Mai @ Hellointerview.com
