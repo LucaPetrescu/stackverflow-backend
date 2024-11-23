@@ -2,6 +2,24 @@ version: "3.9"
 
 services:
 
+  consumer-app-service:
+      build:
+        context: ./rabbitmq-consumer-service
+        dockerfile: Dockerfile
+      container_name: consumer-app-service
+      restart: unless-stopped
+      volumes:
+      - ./rabbitmq-consumer-service:/usr/src/app
+      - ./rabbitmq-consumer-service/node_modules:/usr/src/app/node_modules
+      environment:
+        NODE_ENV: development
+        QUEUE_NAME_POSTS: POST_QUEUE
+        QUEUE_NAME_REPLIES: REPLY_QUEUE
+      depends_on:
+        - rabbitmq
+      networks:
+        - sw-net
+
   reply-srv-app:
     build:
       context: ./reply-service

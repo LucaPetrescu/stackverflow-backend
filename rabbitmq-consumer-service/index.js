@@ -1,22 +1,32 @@
 const express = require("express");
 const app = express();
 
-const { postConsumer } = require("./rabbitmq/postConsumer");
-const { replyConsumer } = require("./rabbitmq/replyConsumer");
+const { queueConsumer } = require("./rabbitmq/queueConsumer");
 
-dotenv.config();
+require("dotenv").config();
 
 app.use(express.json());
 
 const PORT = process.env.PORT || 7004;
 
-postConsumer()
-  .then(() => console.log("Consumer initialized."))
-  .catch((err) => console.error("Error initializing consumer:", err.message));
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-replyConsumer()
-  .then(() => console.log("Consumer initialized."))
-  .catch((err) => console.error("Error initializing consumer:", err.message));
+//Delay added for the service to start after the rabbitmq queues are initalized.
+(async function initializeConsumers() {
+  try {
+    const delayMs = parseInt("10000", 10);
+    console.log(`Delaying consumer initialization by ${delayMs} ms...`);
+    await delay(delayMs);
+
+    await queueConsumer("POST_QUEUE");
+    console.log("Consumer initialized for POST_QUEUE.");
+
+    await queueConsumer("REPLY_QUEUE");
+    console.log("Consumer initialized for REPLY_QUEUE.");
+  } catch (err) {
+    console.error("Error initializing consumers:", err.message);
+  }
+})();
 app.listen(PORT, () => {
   console.log(`Consumer Service running on port ${PORT}`);
 });

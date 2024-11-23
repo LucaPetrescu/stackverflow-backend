@@ -2,16 +2,16 @@ const amqp = require("amqplib");
 
 const QUEUE_NAME = "POST_QUEUE";
 
-async function postConsumer() {
+async function queueConsumer(queuqName) {
   const connection = await amqp.connect("amqp://user:password@rabbitmq:5672");
   const channel = await connection.createChannel();
 
   try {
-    await channel.assertQueue(QUEUE_NAME, { durable: true });
-    console.log(`Waiting for messages in queue: "${QUEUE_NAME}"`);
+    await channel.assertQueue(queuqName, { durable: true });
+    console.log(`Waiting for messages in queue: "${queuqName}"`);
 
     channel.consume(
-      QUEUE_NAME,
+      queuqName,
       async (msg) => {
         if (msg !== null) {
           const messageContent = msg.content.toString();
@@ -34,4 +34,4 @@ async function postConsumer() {
   }
 }
 
-module.exports = { postConsumer };
+module.exports = { queueConsumer };
