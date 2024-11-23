@@ -73,7 +73,7 @@ exports.loginUser = async (req, res) => {
     //I know the access token is already being sent to the Authorization header,
     // but since this is a demo app, it will be much easier for me to handle it like this
 
-    return res.status(200).send(token);
+    return res.status(200).send({ token: token });
   } catch (error) {
     res.status(500).send(error.message);
   }
@@ -105,7 +105,9 @@ exports.getProfile = async (req, res) => {
       res.status(404).send({ message: "Something went wrong" });
     }
 
-    return res.status(200).send(foundUser);
+    return res
+      .status(200)
+      .send({ message: `Profile for user with Id ${userid}:`, foundUser });
   } catch (e) {
     res.status(500).send(err);
   }

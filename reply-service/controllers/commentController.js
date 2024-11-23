@@ -27,7 +27,7 @@ exports.commentToPost = async (req, res) => {
 
     await createProducer({
       message: `User with id ${userId} commented on the post`,
-      post,
+      comment: comment,
     });
 
     await axios.patch(

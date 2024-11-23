@@ -12,6 +12,7 @@ const PORT = process.env.PORT || 7004;
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 //Delay added for the service to start after the rabbitmq queues are initalized.
+//10 seconds was the perfect timing
 (async function initializeConsumers() {
   try {
     const delayMs = parseInt("10000", 10);

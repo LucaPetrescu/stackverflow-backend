@@ -215,7 +215,7 @@ When a user posts a new question or answers a question, the update will be pushe
 
 ## Deep Dives
 
-#### The application should scale up to
+#### The application should scale up from 10m DAU to 30m DAU
 
 ## References
 

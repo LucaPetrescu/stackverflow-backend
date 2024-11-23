@@ -2,15 +2,17 @@ const amqp = require("amqplib");
 
 async function createProducer(message) {
   const connection = await amqp.connect("amqp://user:password@rabbitmq:5672");
-  console.log(connection);
+
   const channel = await connection.createChannel();
 
   try {
     await channel.assertQueue("REPLY_QUEUE", { durable: true });
 
+    const messageString = JSON.stringify(message);
+
     channel.sendToQueue(
       "REPLY_QUEUE",
-      Buffer.from(message),
+      Buffer.from(messageString),
       { persistent: true },
       (err) => {
         if (err) {
