@@ -1,8 +1,8 @@
 const amqp = require("amqplib");
 
-const QUEUE_NAME = "POST_QUEUE";
+const QUEUE_NAME = "REPLY_QUEUE";
 
-async function postConsumer() {
+async function replyConsumer() {
   const connection = await amqp.connect("amqp://user:password@rabbitmq:5672");
   const channel = await connection.createChannel();
 
@@ -34,4 +34,4 @@ async function postConsumer() {
   }
 }
 
-module.exports = { postConsumer };
+module.exports = { replyConsumer };
