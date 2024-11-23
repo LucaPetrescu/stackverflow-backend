@@ -86,6 +86,17 @@ services:
       driver: "none"
     networks:
       - sw-net
+  
+  topk-redis:
+    image: redis:latest
+    container_name: topk-redis
+    restart: unless-stopped
+    ports:
+      - "6380:6379" 
+    logging:
+      driver: "none"
+    networks:
+      - sw-net
 
   redis-monitor:
     image: rediscommander/redis-commander:latest

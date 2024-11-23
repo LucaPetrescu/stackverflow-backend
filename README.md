@@ -176,11 +176,16 @@ GET /post/getAllPosts {
 The approach here is pretty straightforward. In the high-level design, the user is routed via the API Gateway to the User Service, which also handles the authentication and authorization logic. Here, the user creates an account or logs in. From here, he or she will be able to access the other routes and services of the application.
 To make sure the user is authenticated, an approach with JWT was used in the code.
 
+Another requirement was to always redirect the user to the page where all of the questisons are. 
+
+This is done in the code in the authentication service: once the user logs in, all of the posts will be fetched. Of course, you can make this look nicer by building a frontend.
+
 For implementing the API Gateway in my code, I have used NGINX. Also, features like rate limiting for preventing system overwhelming were provided. More on that later.
 
 #### 2. Users should be able to create posts
 
 The user post creation is handled by the Post Service. Here, the user can create, upvote, downvote, see all the posts and get a certain post. As mentioned earlier, and also provided in the Functional Rquirements, the user cannot interact with this service unless it is authenticated.
+
 For handling high reads without querying the Database everytime the user requests a certain post, I have implemented a caching solution with Redis. In the Redis Cache, posts will be stored with a TTL, so later if the user will request to see the same post (maybe he checks a post from 5 to 5 minutes to see the latest comments), the database will not need to be queried.
 
 #### 3. Users should be able to reply to a post (answer questions)
@@ -195,7 +200,9 @@ This is handled by the Post Service in the `/upvote` and `/downvote` endpoints. 
 
 There are multiple ways of building a Top K Posts Service. It can be considered as a totally separate system design problem, but we will tackle it anyways.
 
-TBD -> Use Mongo aggregation pipelines. You can have a service that runs at a certain interval to run this pipeline and cache the data.
+I my approach, I have used Mongo aggregation pipelines. it allowed me to make a combined query that aggregates results based on some conditions. For example, I am requesting the top 10 posts with the most upvotes and the most number of comments. I am also making use of ```$merge``` that merges the output into the top_posts collection, updating existing posts or inserting new ones if they don’t exist. This way, we do not have to always create a new ```top_posts``` collection.
+
+To make sure we retrieve the data as fast as possible, a Redis Cache was added to cahce the results. The cache is constanlty updated at a certain interval of time.
 
 To query the database at a certain interval of time, we can use a cron job that runs at a certain time interval (10 minutes would be okay).
 
@@ -205,7 +212,9 @@ Here, the user can see a certain question. It ca see the details of that questio
 
 #### 7. Users should not be able to post or answer questions if they are not authenticated
 
-This is the authentication/authorization logic we have been talking about in the begining. Basically, users will not be able to interact with certain endpoints unless they are authenticated. This is done by the user logging in and recieving an access token. This is done by leveraging JWT. On the enpoints that interact with the posts and comments, users will need to have the access token in the Authorization Header in order to be able to make certain operations. The token is checked by an authorization middleware which is included in every of the services that interacts with the posts. The middleware gets the token from the header and checks it. If the token is valid, than the user can post, comment, upvote or downvote questions.
+This is the authentication/authorization logic we have been talking about in the begining. Basically, users will not be able to interact with certain endpoints unless they are authenticated. This is done by the user logging in and recieving an access token. This is done by leveraging JWT. 
+
+On the endpoints that interact with the posts and comments, users will need to have the access token in the Authorization Header in order to be able to make certain operations. The token is checked by an authorization middleware which is included in every of the services that interacts with the posts. The middleware gets the token from the header and checks it. If the token is valid, than the user can post, comment, upvote or downvote questions.
 
 #### 8. Users should be able to see real time updates
 
@@ -215,7 +224,23 @@ When a user posts a new question or answers a question, the update will be pushe
 
 ## Deep Dives
 
-#### The application should scale up from 10m DAU to 30m DAU
+#### How can we scale up from 10m DAU to 30m DAU?
+
+In 2022, Stackoverflow reached 100m DAU per month. This is quite a huge number. In this scenario, scalability is really important. 
+
+There are plenty of ways to scale the an application, depending on the needs it has to fulfil. One way of do it use leveraging horizontal scaling. This means that multiple instances of that services can be addded in order to fulfil the high demand.
+
+We can also make use of load balancers. NGINX comes with a solution for this. We can pick algorithms like Round Robin or Least Connections in order to evenly distribute the load. Implement load balancing for all horizontally scaled services and databases.
+
+#### How can we handle high throughput?
+
+In an app like Stackoverflow there will always be a high number of requests for creating new posts or replying to posts. In order to handle this problem, we can make use of queying services like Kafka or RabbitMQ.
+
+If we need to think about fault tolerance (let's say that the Post Service or Database goes down), a good approach will be to use a system like Kafka, since posts are persisted inside the topics.
+
+Another way to think about high throughput, would be the use of a Rate Limiter. This makes sure that the services are not overwhelmed by requests.
+
+In my approach, I have used NGINX for implementing an API Gateway and also Rate Limiting.
 
 ## References
 

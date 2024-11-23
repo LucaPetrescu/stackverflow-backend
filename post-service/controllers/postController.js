@@ -171,7 +171,12 @@ exports.getPostById = async (req, res) => {
       return res.status(404).send({ message: "Post not found." });
     }
 
-    await redis.set(postId, JSON.stringify(post), "EX", 3600);
+    await redis.set(
+      postId,
+      JSON.stringify({ post, commentsFromThePost }),
+      "EX",
+      3600
+    );
 
     return res.status(200).send({
       message: "Post retrieved from database and cached",
