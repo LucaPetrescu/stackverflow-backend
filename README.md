@@ -2,7 +2,7 @@
 
 **Note:** This is a theoretical design that focuses on a large scale distributed approach of designing an application like Stackoverflow.
 
-In the developed code, most of the components are not present since it is a code written for demonstrative purposes and adding all the elements and services in this design will be very time consuming, overwhelming and will not lead to anywhere.
+In the developed code, some of the components are not present since it is a code written for demonstrative purposes and adding all the elements and services in this design will be very time consuming, overwhelming and will not lead to anywhere.
 
 This approach reflects my way of thinking when faced with a system design problem.
 
