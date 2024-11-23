@@ -1,6 +1,6 @@
 # Design Stackoverflow
 
-**Note:** This is a theoretical design that focuses on a large scale distributed approach of designing an application like Stackoverflow. 
+**Note:** This is a theoretical design that focuses on a large scale distributed approach of designing an application like Stackoverflow.
 
 In the developed code, most of the components are not present since it is a code written for demonstrative purposes and adding all the elements and services in this design will be very time consuming, overwhelming and will not lead to anywhere.
 
@@ -31,7 +31,7 @@ References are provided at the end of the document.
 
 **Note:** If the picture is not loading, I have included it in the project root directory. See design_stackoverflow.jpg
 
-![[design_stackoverflow.jpg]]
+![[design_stackoverflow.png]]
 
 ## Entities
 
@@ -47,7 +47,7 @@ References are provided at the end of the document.
 POST /auth/register {
 	username
 	email
-	password 
+	password
 	first_name
 	last_name
 } -> {
@@ -144,7 +144,7 @@ POST /post/upvote/{postId} {
 	Authorization: Bearer <access_token>
 } -> {
 	Success 200
-		
+
 } | {
 	Unauthorized 401
 }
@@ -155,7 +155,7 @@ POST /post/downvote/{postId} {
 	Authorization: Bearer <access_token>
 } -> {
 	Success 200
-		
+
 } | {
 	Unauthorized 401
 }
@@ -173,17 +173,15 @@ GET /post/getAllPosts {
 
 #### 1. Users should be able to create an account and log in
 
-The approach here is pretty straightforward. In the high-level design, the user is routed via the API Gateway to the User Service, which also handles the authentication and authorization logic. Here, the user creates an account or logs in. From here, he or she will be able to access the other routes and services of the application. 
-	
-To make sure the user is authenticated, an approach with JWT was used in the code. 
+The approach here is pretty straightforward. In the high-level design, the user is routed via the API Gateway to the User Service, which also handles the authentication and authorization logic. Here, the user creates an account or logs in. From here, he or she will be able to access the other routes and services of the application.
+To make sure the user is authenticated, an approach with JWT was used in the code.
 
 For implementing the API Gateway in my code, I have used NGINX. Also, features like rate limiting for preventing system overwhelming were provided. More on that later.
 
 #### 2. Users should be able to create posts
 
-The user post creation is handled by the Post Service. Here, the user can create, upvote, downvote, see all the posts and get a certain post. As mentioned earlier, and also provided in the Functional Rquirements, the user cannot interact with this service unless it is authenticated. 
-	
-For handling high reads without querying the Database everytime the user requests a certain post, I have implemented a caching solution with Redis. In the Redis Cache, posts will be stored with a TTL, so later if the user will request to see the same post (maybe he checks a post from 5 to 5 minutes to see the latest comments), the database will not need to be queried. 
+The user post creation is handled by the Post Service. Here, the user can create, upvote, downvote, see all the posts and get a certain post. As mentioned earlier, and also provided in the Functional Rquirements, the user cannot interact with this service unless it is authenticated.
+For handling high reads without querying the Database everytime the user requests a certain post, I have implemented a caching solution with Redis. In the Redis Cache, posts will be stored with a TTL, so later if the user will request to see the same post (maybe he checks a post from 5 to 5 minutes to see the latest comments), the database will not need to be queried.
 
 #### 3. Users should be able to reply to a post (answer questions)
 
@@ -191,11 +189,11 @@ This is handled by the Reply Service. Everytime the user wants to answer a quest
 
 #### 4. Users should be able to upvote or downvote posts
 
-This is handled by the Post Service in the ```/upvote``` and ```/downvote``` endpoints. Also, these endpoints will not be available unless the user is authenticated.
+This is handled by the Post Service in the `/upvote` and `/downvote` endpoints. Also, these endpoints will not be available unless the user is authenticated.
 
 #### 5. Users should be able to see top k ranking posts
 
-There are multiple ways of building a Top K Posts Service. It can be considered as a totally separate system design problem, but we will tackle it anyways. 
+There are multiple ways of building a Top K Posts Service. It can be considered as a totally separate system design problem, but we will tackle it anyways.
 
 TBD -> Use Mongo aggregation pipelines. You can have a service that runs at a certain interval to run this pipeline and cache the data.
 
@@ -217,7 +215,7 @@ When a user posts a new question or answers a question, the update will be pushe
 
 ## Deep Dives
 
-#### The application should scale up to 
+#### The application should scale up to
 
 ## References
 
