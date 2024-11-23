@@ -31,7 +31,7 @@ References are provided at the end of the document.
 
 **Note:** If the picture is not loading, I have included it in the project root directory. See design_stackoverflow.jpg
 
-![[design_stackoverflow.png]]
+![alt text](https://github.com/LucaPetrescu/stackverflow-backend/blob/main/design_stackoverflow.png)
 
 ## Entities
 
