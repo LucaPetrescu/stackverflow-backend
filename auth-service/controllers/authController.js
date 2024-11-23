@@ -1,4 +1,6 @@
+const axios = require("axios");
 const User = require("../models/User");
+const Post = require("../models/Post");
 
 const {
   encryptPassword,
@@ -70,10 +72,12 @@ exports.loginUser = async (req, res) => {
       httpOnly: true,
     });
 
+    const posts = await Post.find();
+
     //I know the access token is already being sent to the Authorization header,
     // but since this is a demo app, it will be much easier for me to handle it like this
 
-    return res.status(200).send({ token: token });
+    return res.status(200).send({ token: token, posts });
   } catch (error) {
     res.status(500).send(error.message);
   }

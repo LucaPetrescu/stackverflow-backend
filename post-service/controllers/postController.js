@@ -1,3 +1,4 @@
+const Comment = require("../models/Comment");
 const Post = require("../models/Post");
 const Redis = require("ioredis");
 const { createProducer } = require("../rabbitmq/producer");
@@ -150,6 +151,16 @@ exports.getPostById = async (req, res) => {
     }
 
     const post = await Post.findById(postId);
+
+    const comments = await Comment.find({ _id: { $in: post.comments } });
+
+    const formattedComments = comments.map((comment) => ({
+      _id: comment._id,
+      content: comment.content,
+      userId: comment.userId,
+    }));
+
+    post.comments = formattedComments;
 
     if (!post) {
       return res.status(404).send({ message: "Post not found." });
