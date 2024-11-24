@@ -226,7 +226,7 @@ We may have a Kafka topic (or whatever streaming service you want) that sends th
 
 **Note:** If the picture is not loading, I have included it in the project root directory. See design_topkservice.jpg
 
-![alt text](https://github.com/LucaPetrescu/stackverflow-backend/blob/main/design_designtopkservice.jpg)
+![alt text](https://github.com/LucaPetrescu/stackverflow-backend/blob/main/design_topkservice.jpg)
 
 However, my approach is simpler and it does not require such complexity.
 
