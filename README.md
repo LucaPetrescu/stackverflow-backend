@@ -222,6 +222,8 @@ This is done by using a combination between queueying solutions and real-time co
 
 When a user posts a new question or answers a question, the update will be pushed to a queue (most probably RabbitMQ). Here, the events will be consumed by a service that is always on the watch for new events created in the queue. The service will get the events form the queue and establish a WebScocket connection with the client to send the updates. This can also be done with Server Sent Events.
 
+In my approach, I have made use of SSE since it is one-directional and it is much simpler to implement. I have also included a dummy frontend client made in React for testing.
+
 ## Deep Dives
 
 #### How can we scale up from 10m DAU to 30m DAU?
