@@ -1,4 +1,5 @@
 const amqp = require("amqplib");
+const sseClients = [];
 
 const QUEUE_NAME = "POST_QUEUE";
 
@@ -17,6 +18,12 @@ async function queueConsumer(queuqName) {
           const messageContent = msg.content.toString();
           console.log(`Received message: ${messageContent}`);
 
+          sseClients.forEach((client) => {
+            client.write(
+              `data: ${JSON.stringify({ message: messageContent })}\n\n`
+            );
+          });
+
           try {
             channel.ack(msg);
             console.log(`Acknowledged message: ${messageContent}`);
@@ -34,4 +41,21 @@ async function queueConsumer(queuqName) {
   }
 }
 
-module.exports = { queueConsumer };
+function addSSEClient(req, res) {
+  res.setHeader("Content-Type", "text/event-stream");
+  res.setHeader("Cache-Control", "no-cache");
+  res.setHeader("Connection", "keep-alive");
+
+  res.flushHeaders();
+
+  sseClients.push(res);
+
+  req.on("close", () => {
+    const index = sseClients.indexOf(res);
+    if (index !== -1) {
+      sseClients.splice(index, 1);
+    }
+  });
+}
+
+module.exports = { addSSEClient, queueConsumer };

@@ -1,13 +1,18 @@
 const express = require("express");
+const cors = require("cors");
 const app = express();
 
-const { queueConsumer } = require("./rabbitmq/queueConsumer");
+const { queueConsumer, addSSEClient } = require("./rabbitmq/queueConsumer");
 
 require("dotenv").config();
-
+app.use(cors({ origin: "*" }));
 app.use(express.json());
 
 const PORT = process.env.PORT || 7004;
+
+app.get("/sse", (req, res) => {
+  addSSEClient(req, res);
+});
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -28,6 +33,6 @@ const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
     console.error("Error initializing consumers:", err.message);
   }
 })();
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.log(`Consumer Service running on port ${PORT}`);
 });

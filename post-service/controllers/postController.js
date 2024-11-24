@@ -23,7 +23,7 @@ exports.createPost = async (req, res) => {
 
     const post = await Post.create({ userId, title, content });
 
-    await createProducer(post);
+    await createProducer({ message: "New post added", post });
 
     res.status(201).send({ message: "Post created", post: post });
   } catch (error) {

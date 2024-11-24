@@ -7,6 +7,8 @@ services:
         context: ./rabbitmq-consumer-service
         dockerfile: Dockerfile
       container_name: consumer-app-service
+      ports:
+        - "7004:7004"
       restart: unless-stopped
       volumes:
       - ./rabbitmq-consumer-service:/usr/src/app
@@ -19,9 +21,6 @@ services:
         - rabbitmq
       networks:
         - sw-net
-
-
-
 
   reply-srv-app:
     build:
