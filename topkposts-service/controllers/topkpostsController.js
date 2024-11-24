@@ -1,8 +1,20 @@
-const mongoose = require("mongoose");
 const Post = require("../models/Post");
+const redis = require("../redis/redis-connection");
+const {
+  updateCacheIfChanged,
+} = require("../scheduler/triggerAggregationPipelie");
 
 exports.getTopKPosts = async (req, res) => {
   try {
+    const cachedPosts = await redis.get("topKPosts");
+
+    if (cachedPosts) {
+      return res.status(200).send({
+        message: "Top 10 posts retrieved from cache",
+        topKPosts: JSON.parse(cachedPosts),
+      });
+    }
+
     const aggregationPipelineForFetching = [
       {
         $addFields: { numComments: { $size: "$comments" } },
@@ -32,6 +44,8 @@ exports.getTopKPosts = async (req, res) => {
     ];
 
     await Post.aggregate(aggregationPipelineForMerging);
+
+    await updateCacheIfChanged(topKPosts);
 
     res
       .status(200)

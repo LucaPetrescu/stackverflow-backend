@@ -250,6 +250,8 @@ Using docker to run multiple containers will be very helpful in this approach, s
 
 In out application, we have more microservices that run accros a network. Let's say we want to deploy a new update for the version for the authentication service. Say we have 3 instances of thi service running. Firstly, we will stop the first instance from serving any traffic. We will update this instance, test it to see if it runs correcnt and if it is able to recieve any traffic, and after that integrate it back to the pool of services that serve traffic. The same process will hapen for the next running insances of the service.
 
+Having a microservices architecture should be easy to deploy updates on the go. We can do this by using solutions like Ansible.
+
 ## References
 
 1. Evan King, Stefan Mai @ Hellointerview.com

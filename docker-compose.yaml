@@ -20,6 +20,9 @@ services:
       networks:
         - sw-net
 
+
+
+
   reply-srv-app:
     build:
       context: ./reply-service
@@ -31,6 +34,25 @@ services:
     volumes:
       - ./reply-service:/usr/src/app
       - ./reply-service/node_modules:/usr/src/app/node_modules
+    environment:
+      NODE_ENV: development
+    depends_on:
+      - stackoverflow-redis
+      - rabbitmq
+    networks:
+      - sw-net
+
+  topkposts-srv-app:
+    build:
+      context: ./topkposts-service
+      dockerfile: Dockerfile
+    container_name: topkpost-srv-app
+    ports:
+      - "7003:7003"
+    restart: unless-stopped
+    volumes:
+      - ./topkposts-service:/usr/src/app
+      - ./topkposts-service/node_modules:/usr/src/app/node_modules
     environment:
       NODE_ENV: development
     depends_on:
@@ -105,7 +127,8 @@ services:
     ports:
       - "8001:8081"
     environment:
-      - REDIS_HOSTS=local:stackoverflow-redis:6379
+      # - REDIS_HOSTS=local:stackoverflow-redis:6379
+      - REDIS_HOSTS=local:stackoverflow-redis:6379,local:topk-redis:6379
     networks:
       - sw-net
 
