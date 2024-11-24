@@ -226,6 +226,8 @@ We may have a Kafka topic (or whatever streaming service you want) that sends th
 
 **Note:** If the picture is not loading, I have included it in the project root directory. See design_topkservice.jpg
 
+![alt text](https://github.com/LucaPetrescu/stackverflow-backend/blob/main/design_designtopkservice.jpg)
+
 However, my approach is simpler and it does not require such complexity.
 
 I my approach, I have used Mongo aggregation pipelines. It allowed me to make a combined query that aggregates results based on some conditions. For example, I am requesting the top 10 posts with the most upvotes and the most number of comments. I am also making use of `$merge` that merges the output into the top_posts collection, updating existing posts or inserting new ones if they don’t exist. This way, we do not have to always create a new `top_posts` collection.
