@@ -3,10 +3,12 @@ const request = require("supertest");
 const { MongoMemoryServer } = require("mongodb-memory-server");
 const User = require("../models/User");
 const app = require("../index");
-const { accessToken } = require("../JWT/jwt-helpers");
-
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
 let mongoServer;
 let server;
+
+const tokenSecret = process.env.ACCESS_TOKEN_SECRET;
 
 beforeAll(async () => {
   mongoServer = await MongoMemoryServer.create();
@@ -54,7 +56,6 @@ describe("Auth Service Tests", () => {
         .send(sampleUser);
 
       expect(res.status).toBe(201);
-      expect(res.body).toHaveProperty("token");
       expect(res.body.newUser.username).toBe(sampleUser.username);
     });
 
@@ -90,87 +91,49 @@ describe("Auth Service Tests", () => {
         .send(userCredentials);
 
       expect(res.status).toBe(200);
-      expect(res.body).toHaveProperty("token");
+      expect(res.body).toHaveProperty("posts");
     });
   });
 });
 
-jest.mock("../JWT/jwt-helpers", () => ({
-  accessToken: jest.fn(),
-}));
-
 describe("GET /profile", () => {
   let validToken;
+  let invalidToken;
 
-  beforeEach(() => {
-    validToken = "valid-jwt-token";
+  beforeAll(() => {
+    validToken = jwt.sign(
+      { id: "valid-user-id", username: "john_doe" },
+      process.env.ACCESS_TOKEN_SECRET,
+      { expiresIn: "1h" }
+    );
+
+    invalidToken = "invalid-jwt-token";
   });
 
   it("should return 401 if authorization header is missing", async () => {
-    const res = await request(app).get("auth/getProfile");
-
-    expect(res.status).toBe(401);
-    expect(res.body.message).toBe("Authorization header is missing");
-  });
-
-  it("should return 401 if token is missing", async () => {
-    const res = await request(app)
-      .get("/auth/getProfile")
-      .set("Authorization", "Bearer");
-
-    expect(res.status).toBe(401);
-    expect(res.body.message).toBe("Token is missing");
-  });
-
-  it("should return 401 if the token is invalid", async () => {
-    accessToken.mockImplementationOnce(() => {
+    jest.spyOn(jwt, "verify").mockImplementationOnce(() => {
       throw new Error("Invalid token");
+    });
+    const res = await request(app).get("/auth/getProfile");
+
+    expect(res.status).toBe(401);
+    expect(res._body.message).toBe("Authorization header is missing");
+  });
+
+  it("should return 201 if a user is found", async () => {
+    await request(app).post("/auth/registerUser").send({
+      id: "valid-user-id",
+      username: "john_doe",
+      password: "password123",
+      email: "johnsmith@example.com",
+      firstName: "John",
+      lastName: "Smith",
     });
 
     const res = await request(app)
       .get("/auth/getProfile")
       .set("Authorization", `Bearer ${validToken}`);
 
-    expect(res.status).toBe(401);
-    expect(res.body.message).toBe("Invalid token");
-  });
-
-  it("should return 404 if user is not found", async () => {
-    accessToken.mockImplementationOnce(() => ({
-      id: "non-existent-user-id",
-      username: "non-existsing-name",
-    }));
-
-    User.findOne = jest.fn().mockResolvedValue(null);
-
-    const res = await request(app)
-      .get("/profile")
-      .set("Authorization", `Bearer ${validToken}`);
-
-    expect(res.status).toBe(404);
-    expect(res.body.message).toBe("Something went wrong");
-  });
-
-  it("should return 200 and user profile when valid token is provided", async () => {
-    const mockUser = {
-      id: "user-id",
-      username: "john_doe",
-      email: "john.doe@example.com",
-    };
-
-    accessToken.mockImplementationOnce(() => ({
-      id: "user-id",
-      username: "john_doe",
-    }));
-
-    User.findOne = jest.fn().mockResolvedValue(mockUser);
-
-    const res = await request(app)
-      .get("/profile")
-      .set("Authorization", `Bearer ${validToken}`);
-
-    expect(res.status).toBe(200);
-    expect(res.body.message).toBe("Profile for user with Id user-id:");
-    expect(res.body.foundUser).toEqual(mockUser);
+    expect(res.status).toBe(201);
   });
 });

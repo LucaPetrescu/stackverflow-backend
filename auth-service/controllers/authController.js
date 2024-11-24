@@ -112,7 +112,7 @@ exports.getProfile = async (req, res) => {
     }
 
     return res
-      .status(200)
+      .status(201)
       .send({ message: `Profile for user with Id ${userid}:`, foundUser });
   } catch (err) {
     res.status(500).send(err);

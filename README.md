@@ -171,6 +171,18 @@ GET /post/getAllPosts {
 }
 ```
 
+## Tech Stack
+
+The techologies I have picked for this project are as following:
+
+Node.js for developing the backend
+MongoDB as the Database
+Redis as the Caching solution
+Docker as the containerization solution
+React for demonstrating the functionality of the Real-Time Updates Service
+RabbitMQ as the queueing solution
+NGINX for the API Gateway and Rate Limiting
+
 #### 1. Users should be able to create an account and log in
 
 The approach here is pretty straightforward. In the high-level design, the user is routed via the API Gateway to the User Service, which also handles the authentication and authorization logic. Here, the user creates an account or logs in. From here, he or she will be able to access the other routes and services of the application.
@@ -218,9 +230,9 @@ On the endpoints that interact with the posts and comments, users will need to h
 
 #### 8. Users should be able to see real time updates
 
-This is done by using a combination between queueying solutions and real-time communication (WebSockets, SSE etc)
+This is done by using a combination between queueing solutions and real-time communication (WebSockets, SSE etc)
 
-When a user posts a new question or answers a question, the update will be pushed to a queue (most probably RabbitMQ). Here, the events will be consumed by a service that is always on the watch for new events created in the queue. The service will get the events form the queue and establish a WebScocket connection with the client to send the updates. This can also be done with Server Sent Events.
+When a user posts a new question or answers a question, the update will be pushed to a queue (most probably RabbitMQ). Here, the events will be consumed by a service that is always on the watch for new events created in the queue. The service will get the events from the queue and establish a WebScocket connection with the client to send the updates. This can also be done with Server Sent Events.
 
 In my approach, I have made use of SSE since it is one-directional and it is much simpler to implement. I have also included a dummy frontend client made in React for testing.
 
@@ -250,9 +262,13 @@ One of the most commonly used technique in updating software as it runs is using
 
 Using docker to run multiple containers will be very helpful in this approach, since in fact, rolling updates align well with the core principles of microservice architectures.
 
-In out application, we have more microservices that run accros a network. Let's say we want to deploy a new update for the version for the authentication service. Say we have 3 instances of thi service running. Firstly, we will stop the first instance from serving any traffic. We will update this instance, test it to see if it runs correcnt and if it is able to recieve any traffic, and after that integrate it back to the pool of services that serve traffic. The same process will hapen for the next running insances of the service.
+In out application, we have more microservices that run accros a network. Let's say we want to deploy a new update for the version for the authentication service. Say we have 3 instances of this service running. Firstly, we will stop the first instance from serving any traffic. We will update this instance, test it to see if it runs correctly and if it is able to recieve any traffic, and after that integrate it back to the pool of services that serve traffic. The same process will hapen for the next running instances of the service.
 
 Having a microservices architecture should be easy to deploy updates on the go. We can do this by using solutions like Ansible.
+
+## Deploying the application
+
+For deploying the application, I will personally choose GCP with Google Compute Engine.
 
 ## References
 

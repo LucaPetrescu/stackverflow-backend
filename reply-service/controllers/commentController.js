@@ -1,5 +1,6 @@
 const axios = require("axios");
 const Comment = require("../models/Comment");
+const Post = require("../models/Post");
 const { createProducer } = require("../rabbitmq/producer");
 
 exports.commentToPost = async (req, res) => {
@@ -25,19 +26,25 @@ exports.commentToPost = async (req, res) => {
 
     const comment = await Comment.create({ postId, userId, content });
 
+    await Post.findByIdAndUpdate(
+      postId,
+      { $push: { comments: comment._id } },
+      { new: true }
+    );
+
     await createProducer({
       message: `User with id ${userId} commented on the post`,
       comment: comment,
     });
 
-    await axios.patch(
-      `http://posts-srv-app:7001/post/addCommentToPost`,
-      { commentId: comment._id },
-      {
-        params: { postId },
-        headers: { Authorization: "Bearer " + token },
-      }
-    );
+    // await axios.patch(
+    //   `http://posts-srv-app:7001/post/addCommentToPost`,
+    //   { commentId: comment._id },
+    //   {
+    //     params: { postId },
+    //     headers: { Authorization: "Bearer " + token },
+    //   }
+    // );
 
     res
       .status(201)
