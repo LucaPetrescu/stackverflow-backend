@@ -176,11 +176,17 @@ GET /post/getAllPosts {
 The techologies I have picked for this project are as following:
 
 Node.js for developing the backend
+
 MongoDB as the Database
+
 Redis as the Caching solution
+
 Docker as the containerization solution
+
 React for demonstrating the functionality of the Real-Time Updates Service
+
 RabbitMQ as the queueing solution
+
 NGINX for the API Gateway and Rate Limiting
 
 #### 1. Users should be able to create an account and log in
