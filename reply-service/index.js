@@ -10,14 +10,16 @@ require("dotenv").config();
 const app = express();
 const PORT = process.env.PORT || 7002;
 
-mongoose
-  .connect(db, { useNewUrlParser: true })
-  .then(() => {
-    console.log("Mongoose Connected");
-  })
-  .catch((err) => {
-    console.log(err);
-  });
+if (process.env.NODE_ENV !== "test") {
+  mongoose
+    .connect(db, { useNewUrlParser: true })
+    .then(() => {
+      console.log("Mongoose Connected");
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
 
 app.use(morgan("dev"));
 
@@ -29,3 +31,5 @@ app.use("/reply", routes);
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
+
+module.exports = app;

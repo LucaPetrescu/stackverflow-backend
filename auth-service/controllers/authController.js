@@ -36,12 +36,12 @@ exports.registerUser = async (req, res) => {
       lastName: lastName,
     });
 
+    const token = accessToken(newUser._id, newUser.username);
+
     res.cookie("access-token", token, {
       expires: new Date(Date.now() + days),
       httpOnly: true,
     });
-
-    const token = accessToken(newUser._id, newUser.username);
 
     //I know the access token is already being sent to the Authorization header,
     // but since this is a demo app, it will be much easier for me to handle it like this
@@ -79,7 +79,9 @@ exports.loginUser = async (req, res) => {
 
     return res.status(200).send({ token: token, posts });
   } catch (error) {
-    res.status(500).send(error.message);
+    res
+      .status(500)
+      .send({ message: "Registration failed: ", error: error.message });
   }
 };
 
@@ -112,7 +114,7 @@ exports.getProfile = async (req, res) => {
     return res
       .status(200)
       .send({ message: `Profile for user with Id ${userid}:`, foundUser });
-  } catch (e) {
+  } catch (err) {
     res.status(500).send(err);
   }
 };

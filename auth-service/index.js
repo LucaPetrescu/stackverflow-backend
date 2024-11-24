@@ -9,14 +9,16 @@ require("dotenv").config();
 
 const app = express();
 
-mongoose
-  .connect(db, { useNewUrlParser: true })
-  .then(() => {
-    console.log("Mongoose Connected");
-  })
-  .catch((err) => {
-    console.log(err);
-  });
+if (process.env.NODE_ENV !== "test") {
+  mongoose
+    .connect(db, { useNewUrlParser: true })
+    .then(() => {
+      console.log("Mongoose Connected");
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
 
 app.use(morgan("dev"));
 
@@ -27,6 +29,10 @@ app.use("/auth", routes);
 
 const PORT = process.env.PORT || 7000;
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+if (process.env.NODE_ENV !== "test") {
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
+
+module.exports = app;

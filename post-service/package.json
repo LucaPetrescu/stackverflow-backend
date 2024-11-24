@@ -15,10 +15,12 @@
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
     "ioredis": "^5.4.1",
+    "jest": "^29.7.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.8.2",
     "morgan": "^1.10.0",
     "nodemon": "^3.1.7",
-    "post-service": "file:"
+    "post-service": "file:",
+    "supertest": "^7.0.0"
   }
 }

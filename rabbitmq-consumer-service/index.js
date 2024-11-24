@@ -36,3 +36,5 @@ const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Consumer Service running on port ${PORT}`);
 });
+
+module.exports = app;

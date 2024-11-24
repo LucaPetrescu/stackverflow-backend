@@ -11,14 +11,16 @@ require("dotenv").config();
 
 const PORT = process.env.PORT || 7003;
 
-mongoose
-  .connect(db, { useNewUrlParser: true })
-  .then(() => {
-    console.log("Mongoose Connected");
-  })
-  .catch((err) => {
-    console.log(err);
-  });
+if (process.env.NODE_ENV !== "test") {
+  mongoose
+    .connect(db, { useNewUrlParser: true })
+    .then(() => {
+      console.log("Mongoose Connected");
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
 
 app.use(morgan("dev"));
 
@@ -30,3 +32,5 @@ app.use("/topkPosts", routes);
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+module.exports = app;
