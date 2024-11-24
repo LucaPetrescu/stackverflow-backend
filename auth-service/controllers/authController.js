@@ -43,7 +43,7 @@ exports.registerUser = async (req, res) => {
       httpOnly: true,
     });
 
-    //I know the access token is already being sent to the Authorization header,
+    //I know the access token is already being setted as an http-only cookie,
     // but since this is a demo app, it will be much easier for me to handle it like this
 
     res.status(201).send({ token, newUser });
@@ -74,7 +74,7 @@ exports.loginUser = async (req, res) => {
 
     const posts = await Post.find();
 
-    //I know the access token is already being sent to the Authorization header,
+    //I know the access token is already being is already being setted as an http-only cookie,
     // but since this is a demo app, it will be much easier for me to handle it like this
 
     return res.status(200).send({ token: token, posts });

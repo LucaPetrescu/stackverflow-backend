@@ -23,7 +23,7 @@ function App() {
 
   return (
     <div className="App">
-      <header>Hello!</header>
+      <header>Real-Time Updates Test</header>
       <div className="live-updates">
         {updates.map((update, index) => (
           <div key={index} className="update-item">
@@ -31,7 +31,6 @@ function App() {
           </div>
         ))}
       </div>
-      <footer>Real-time updates powered by SSE</footer>
     </div>
   );
 }
