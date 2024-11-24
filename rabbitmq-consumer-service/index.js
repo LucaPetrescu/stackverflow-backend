@@ -20,7 +20,7 @@ const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 //10 seconds was the perfect timing
 (async function initializeConsumers() {
   try {
-    const delayMs = parseInt("10000", 10);
+    const delayMs = parseInt("15000", 10);
     console.log(`Delaying consumer initialization by ${delayMs} ms...`);
     await delay(delayMs);
 

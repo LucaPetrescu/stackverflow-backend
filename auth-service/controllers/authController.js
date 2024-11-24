@@ -67,10 +67,10 @@ exports.loginUser = async (req, res) => {
 
     const token = accessToken(foundUser.id, foundUser.username);
 
-    res.cookie("access-token", token, {
-      expires: new Date(Date.now() + days),
-      httpOnly: true,
-    });
+    // res.cookie("access-token", token, {
+    //   expires: new Date(Date.now() + days),
+    //   httpOnly: true,
+    // });
 
     const posts = await Post.find();
 

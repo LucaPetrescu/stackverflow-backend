@@ -1,7 +1,7 @@
 const schedule = require("node-schedule");
 const redis = require("../redis/redis-connection");
 const crypto = require("crypto");
-
+const Post = require("../models/Post");
 exports.triggerAggregationPipeline = async (redis) => {
   try {
     const aggregationPipelineForFetching = [
@@ -38,7 +38,7 @@ exports.triggerAggregationPipeline = async (redis) => {
     console.log("Top 10 posts aggregation and cache update completed.");
   } catch (error) {
     console.error(
-      "Error during aggregation pipeline execution:",
+      "Error during aggregation pipeline execution(triggerAggregationPipline):",
       error.message
     );
   }

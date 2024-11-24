@@ -3,6 +3,7 @@ const request = require("supertest");
 const { MongoMemoryServer } = require("mongodb-memory-server");
 const app = require("../index");
 const jwt = require("jsonwebtoken");
+const amqp = require("amqplib");
 require("dotenv").config();
 let mongoServer;
 let server;
