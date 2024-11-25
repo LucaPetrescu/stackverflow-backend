@@ -292,6 +292,12 @@ My whole solution uses docker compose in order to start containers. You can see 
 
 For deploying the application, I will personally choose GCP with Google Compute Engine.
 
+1. First thing first, you will need to enable Compute Engine API. You can do this from the Google Cloud Console.
+
+2. Second, install the Google Cloud SDK. You can find it in here: https://cloud.google.com/sdk/docs/install.
+
+3. After installation, the installer will ask you if you want to ```gcloud init```. Select *Yes*. Or else, just open a cmd and do ```gcloud init```.
+
 ## Personal notes
 
 I have tried my best to cover most of the assignment. In my opinion, this was quite a comprehensive task and it really gave me the opportunity to explore, learn and come up with different solutions for this design. I was already running behind schedule with 2-3 assignemnts at school, so I didn't have time to finish the writing of unit-tests entirely. I tried to focus on the core functionalities and providing a good architecture for the solution. Howevere, I managed to develop some unit tests for some of the important features of the app.

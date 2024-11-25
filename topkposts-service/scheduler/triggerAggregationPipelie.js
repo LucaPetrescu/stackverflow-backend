@@ -2,7 +2,7 @@ const schedule = require("node-schedule");
 const redis = require("../redis/redis-connection");
 const crypto = require("crypto");
 const Post = require("../models/Post");
-exports.triggerAggregationPipeline = async (redis) => {
+async function triggerAggregationPipeline(redis) {
   try {
     const aggregationPipelineForFetching = [
       {
@@ -42,13 +42,13 @@ exports.triggerAggregationPipeline = async (redis) => {
       error.message
     );
   }
-};
+}
 
 const generateHash = (data) => {
   return crypto.createHash("sha256").update(JSON.stringify(data)).digest("hex");
 };
 
-exports.updateCacheIfChanged = async (topKPosts) => {
+async function updateCacheIfChanged(topKPosts) {
   try {
     const cachedPosts = await redis.get("topKPosts");
 
@@ -71,6 +71,8 @@ exports.updateCacheIfChanged = async (topKPosts) => {
   } catch (error) {
     console.error("Error updating the cache:", error.message);
   }
-};
+}
 
-schedule.scheduleJob("*/5 * * * *", this.triggerAggregationPipeline);
+schedule.scheduleJob("*/5 * * * *", () => triggerAggregationPipeline(redis));
+
+module.exports = { updateCacheIfChanged };

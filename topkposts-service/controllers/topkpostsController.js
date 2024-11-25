@@ -6,6 +6,8 @@ const {
 
 exports.getTopKPosts = async (req, res) => {
   try {
+    console.log(redis);
+
     const cachedPosts = await redis.get("topKPosts");
 
     if (cachedPosts) {
