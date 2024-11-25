@@ -404,7 +404,7 @@ Notice the port for each service is not needed beacuse of the NGINX instance run
 
 ## Personal notes
 
-I have tried my best to cover most of the assignment. In my opinion, this was quite a comprehensive task and it really gave me the opportunity to explore, learn and come up with different solutions for this design. I was already running behind schedule with 2 assignemnts at school, so I didn't have time to finish the writing of unit-tests entirely. I tried to focus on the core functionalities and providing a good architecture for the solution. However, I managed to develop some unit tests for some of the important features of the app. Also managed to deploy the app on GCP, more preciselt, GCE (Google Compute Engine)
+I have tried my best to cover most of the assignment. In my opinion, this was quite a comprehensive task and it really gave me the opportunity to explore, learn and come up with different solutions for this design. I was already running behind schedule with 2 assignemnts at school, so I didn't have time to finish the writing of unit-tests entirely. I tried to focus on the core functionalities and providing a good architecture for the solution. However, I managed to develop some unit tests for some of the important features of the app. Also managed to deploy the app on GCP, more preciselt, GCE (Google Compute Engine).
 
 I really hope you will enjoy reading this document and also enjoy the code I have developed.
 
