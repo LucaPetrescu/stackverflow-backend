@@ -302,9 +302,11 @@ The steps of setting up the account and the billing for GCP is beyond this tutor
 
 4. Next, you will need to create a new project via the CLI. You can do this by doing ```gcloud projects create [PROJECT_NAME]```.
 
-5. You will need to set the project id as the active project ```gcloud config set core/project [PROJECT_NAME]```
+5. You will need to set the project id as the active project ```gcloud config set core/project [PROJECT_NAME]```. Google Cloud resources, including Compute Engine instances (VMs), are tied to a project.
+Each project serves as a container for all resources and configurations. When you create a VM, the gcloud CLI needs to know which project to associate the VM with.
+You will also be able to access your project and it's specific VMs via the Cloud Console.
 
-6. Next, you will need to create a copute instance:
+6. Next, you will need to create a compute instance:
 
 	`
 	gcloud compute instances create INSTANCE_NAME \
@@ -316,7 +318,11 @@ The steps of setting up the account and the billing for GCP is beyond this tutor
     	--network=NETWORK_NAME
 	`
 
-	**Note**: You can also create a new Instance from the UI from the Google Cloud Console 
+	**Note**: You can also create a new Instance from the UI from the Google Cloud Console.
+
+7. SSH into your Virtual Machine Instance
+
+```gcloud compute ssh [INSTANCE_NAME] --zone=[ZONE]```
 									
 
 ## Personal notes
