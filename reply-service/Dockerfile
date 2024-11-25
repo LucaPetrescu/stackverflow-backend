@@ -8,6 +8,8 @@ RUN npm install
 
 COPY . .
 
+RUN npm install -g nodemon
+
 EXPOSE 7002
 
 CMD ["npm", "start"]
