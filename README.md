@@ -306,6 +306,7 @@ The steps of setting up the account and the billing for GCP is beyond this tutor
 
 6. Next, you will need to create a copute instance:
 
+	`
 	gcloud compute instances create INSTANCE_NAME \
     	--zone=ZONE \
     	--machine-type=MACHINE_TYPE \
@@ -313,7 +314,8 @@ The steps of setting up the account and the billing for GCP is beyond this tutor
     	--image-project=IMAGE_PROJECT \
     	--boot-disk-size=DISK_SIZE \
     	--network=NETWORK_NAME
-		
+	`
+
 	**Note**: You can also create a new Instance from the UI from the Google Cloud Console 
 									
 
