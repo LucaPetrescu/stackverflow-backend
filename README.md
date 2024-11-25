@@ -166,6 +166,9 @@ GET /post/getAllPosts {
 ```
 
 **Note:** When calling the endpoints: you will need to add to the URL an additional "auth" or "post" or whatever. This is because NGINX routes traffic through these locations via the API Gateway. So for example instead of having: `"/auth/loginUser"`, you are going to have `"/auth/auth/loginUser"`.
+
+Also, I know some of the endpoints are not supposed to be protected by an authentication middleware. However, I thought it would be nicer to have protected routes on the post related endpoints. I have added authentication middleware to most of the endpoints that are related to the post service.
+
 ## Tech Stack
 
 The techologies I have picked for this project are as following:
@@ -296,13 +299,13 @@ The steps of setting up the account and the billing for GCP is beyond this tutor
 
 2. Second, install the Google Cloud SDK. You can find it in here: https://cloud.google.com/sdk/docs/install.
 
-3. After installation, the installer will ask you if you want to ```gcloud init```. Select *Yes*. Or else, just open a cmd and do ```gcloud init```.
+3. After installation, the installer will ask you if you want to `gcloud init`. Select _Yes_. Or else, just open a cmd and do `gcloud init`.
 
-4. Next, you will need to create a new project via the CLI. You can do this by doing ```gcloud projects create [PROJECT_NAME]```.
+4. Next, you will need to create a new project via the CLI. You can do this by doing `gcloud projects create [PROJECT_NAME]`.
 
-5. You will need to set the project id as the active project ```gcloud config set core/project [PROJECT_NAME]```. Google Cloud resources, including Compute Engine instances (VMs), are tied to a project.
+5. You will need to set the project id as the active project `gcloud config set core/project [PROJECT_NAME]`. Google Cloud resources, including Compute Engine instances (VMs), are tied to a project.
 
-	Each project serves as a container for all resources and configurations. When you create a VM, the gcloud CLI needs to know which project to associate the VM with. You will also be able to access your project and it's specific VMs via the Cloud Console.
+   Each project serves as a container for all resources and configurations. When you create a VM, the gcloud CLI needs to know which project to associate the VM with. You will also be able to access your project and it's specific VMs via the Cloud Console.
 
 6. Next, you will need to create a compute instance:
 
@@ -315,7 +318,6 @@ The steps of setting up the account and the billing for GCP is beyond this tutor
     	--boot-disk-size=DISK_SIZE \
     	--network=NETWORK_NAME
 ```
-	
 
 **Note**: You can also create a new Instance from the UI from the Google Cloud Console.
 
@@ -324,11 +326,11 @@ The steps of setting up the account and the billing for GCP is beyond this tutor
 ```
 gcloud compute ssh [INSTANCE_NAME] --zone=[ZONE]
 ```
-									
+
 8. Once inside the VM, you will need to install docker and docker compose
 
 ```
-sudo apt update 
+sudo apt update
 sudo apt install -y docker.io
 sudo usermod -aG docker $USER
 ```
@@ -364,7 +366,7 @@ Change to the project directory
 cd stackverflow-backend
 ```
 
-**Very Important Note**: I made a typo while creating the git repo. So instead of *stackoverflow* is *stackverflow*. So be very careful with the names.
+**Very Important Note**: I made a typo while creating the git repo. So instead of _stackoverflow_ is _stackverflow_. So be very careful with the names.
 
 10. Run the application
 
@@ -394,7 +396,7 @@ And look for the `EXTERNAL_IP`.
 
 To test from the local machine to see that the app is runing, you can do:
 
-`http://<vm-ip>/auth/auth/sayHello
+http://<vm-ip>/auth/auth/sayHello
 
 You should get a `Hello from this app` response with a `200 OK` Status code.
 
