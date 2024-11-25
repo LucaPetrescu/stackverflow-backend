@@ -263,7 +263,7 @@ In 2022, Stackoverflow reached 100m DAU per month. This is quite a huge number. 
 
 There are plenty of ways to scale the an application, depending on the needs it has to fulfil. One way of do it use leveraging horizontal scaling. This means that multiple instances of that services can be addded in order to fulfil the high demand.
 
-Another idea would be to use multiple replicas. In Kubernetes, replicas refer to multiple identical instances of an application running concurrently. They ensure that the system can handle more requests by distributing the load across all instances. A ReplicaSet in Kubernetes maintains the desired number of pod replicas, ensuring that even if some instances fail, new ones are automatically created to meet the demand.
+Another idea would be to use multiple replicas. In Kubernetes, replicas refer to multiple identical instances of an application running concurrently. They ensure that the system can handle more requests by distributing the load across all instances. A ReplicaSet in Kubernetes maintains the desired number of pod replicas, ensuring that even if some instances fail, new ones are automatically created to meet the demand. A problem we will need to address, would be the service discorevy one. In a scenario where a system scales up and down horizontally, the IP addresses of the services might change. Service discovery ensure that these instances can be discovered by other services without manual intervention.
 
 We can also make use of load balancers. NGINX comes with a solution for this. We can pick algorithms like Round Robin or Least Connections in order to evenly distribute the load. Implement load balancing for all horizontally scaled services and databases.
 
