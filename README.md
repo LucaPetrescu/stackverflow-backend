@@ -175,23 +175,24 @@ GET /post/getAllPosts {
 
 The techologies I have picked for this project are as following:
 
-Node.js for developing the backend
+- **Node.js** for developing the backend
 
-MongoDB as the Database
+- **MongoDB** as the Database
 
-Redis as the Caching solution
+- **Redis** as the Caching solution
 
-Docker as the containerization solution
+- **Docker** as the containerization solution
 
-React for demonstrating the functionality of the Real-Time Updates Service
+- **React** for demonstrating the functionality of the Real-Time Updates Service
 
-RabbitMQ as the queueing solution
+- **RabbitMQ** as the queueing solution
 
-NGINX for the API Gateway and Rate Limiting
+- **NGINX** for the API Gateway and Rate Limiting
 
 #### 1. Users should be able to create an account and log in
 
 The approach here is pretty straightforward. In the high-level design, the user is routed via the API Gateway to the User Service, which also handles the authentication and authorization logic. Here, the user creates an account or logs in. From here, he or she will be able to access the other routes and services of the application.
+
 To make sure the user is authenticated, an approach with JWT was used in the code.
 
 Another requirement was to always redirect the user to the page where all of the questisons are.
@@ -309,6 +310,7 @@ You will also be able to access your project and it's specific VMs via the Cloud
 6. Next, you will need to create a compute instance:
 
 	`
+```
 	gcloud compute instances create INSTANCE_NAME \
     	--zone=ZONE \
     	--machine-type=MACHINE_TYPE \
@@ -316,13 +318,16 @@ You will also be able to access your project and it's specific VMs via the Cloud
     	--image-project=IMAGE_PROJECT \
     	--boot-disk-size=DISK_SIZE \
     	--network=NETWORK_NAME
+```
 	`
 
-	**Note**: You can also create a new Instance from the UI from the Google Cloud Console.
+**Note**: You can also create a new Instance from the UI from the Google Cloud Console.
 
 7. SSH into your Virtual Machine Instance
 
+```
 ```gcloud compute ssh [INSTANCE_NAME] --zone=[ZONE]```
+```
 									
 
 ## Personal notes
