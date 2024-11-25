@@ -306,15 +306,14 @@ The steps of setting up the account and the billing for GCP is beyond this tutor
 
 6. Next, you will need to create a copute instance:
 
-									```
-									gcloud compute instances create INSTANCE_NAME \
-    									--zone=ZONE \
-    									--machine-type=MACHINE_TYPE \
-    									--image=IMAGE_NAME \
-    									--image-project=IMAGE_PROJECT \
-    									--boot-disk-size=DISK_SIZE \
-    									--network=NETWORK_NAME
-									```
+	gcloud compute instances create INSTANCE_NAME \
+    	--zone=ZONE \
+    	--machine-type=MACHINE_TYPE \
+    	--image=IMAGE_NAME \
+    	--image-project=IMAGE_PROJECT \
+    	--boot-disk-size=DISK_SIZE \
+    	--network=NETWORK_NAME
+									
 
 ## Personal notes
 
