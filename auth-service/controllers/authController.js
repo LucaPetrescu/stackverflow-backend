@@ -17,6 +17,7 @@ const {
 const days = 225892000;
 
 exports.sayHello = async (req, res) => {
+  console.log("HERE");
   res.send("Hello from this app");
 };
 
