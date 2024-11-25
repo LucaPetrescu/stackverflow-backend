@@ -292,11 +292,29 @@ My whole solution uses docker compose in order to start containers. You can see 
 
 For deploying the application, I will personally choose GCP with Google Compute Engine.
 
+The steps of setting up the account and the billing for GCP is beyond this tutorial.
+
 1. First thing first, you will need to enable Compute Engine API. You can do this from the Google Cloud Console.
 
 2. Second, install the Google Cloud SDK. You can find it in here: https://cloud.google.com/sdk/docs/install.
 
 3. After installation, the installer will ask you if you want to ```gcloud init```. Select *Yes*. Or else, just open a cmd and do ```gcloud init```.
+
+4. Next, you will need to create a new project via the CLI. You can do this by doing ```gcloud projects create [PROJECT_NAME]```.
+
+5. You will need to set the project id as the active project ```gcloud config set core/project [PROJECT_NAME]```
+
+6. Next, you will need to create a copute instance:
+
+									```
+									gcloud compute instances create INSTANCE_NAME \
+    									--zone=ZONE \
+    									--machine-type=MACHINE_TYPE \
+    									--image=IMAGE_NAME \
+    									--image-project=IMAGE_PROJECT \
+    									--boot-disk-size=DISK_SIZE \
+    									--network=NETWORK_NAME
+									```
 
 ## Personal notes
 
