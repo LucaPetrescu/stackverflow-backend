@@ -44,7 +44,7 @@ References are provided at the end.
 ### Auth Service
 
 ```
-POST /auth/register {
+POST /auth/registerUser {
 	username
 	email
 	password
@@ -57,7 +57,7 @@ POST /auth/register {
 ```
 
 ```
-POST /auth/login {
+POST /auth/loginUser {
 	email,
 	password
 } -> {
@@ -69,7 +69,7 @@ POST /auth/login {
 ```
 
 ```
-GET /auth/profile {
+GET /auth/getProfile {
 	Authorization: Bearer <access_token>
 } -> {
 		Success 200
@@ -80,7 +80,7 @@ GET /auth/profile {
 ### Top K Posts Service
 
 ```
-GET /topPosts {
+GET /topKPosts/getTopKPosts {
 	Authorization: Bearer <access_token>
 } -> {
 	Success 200
@@ -93,7 +93,7 @@ GET /topPosts {
 ### Reply Service
 
 ```
-POST /reply/createReply/{questionId} {
+POST /reply/commentToPost/?questionId={questionId} {
 	Authorization: Bearer <access_token>
 	Reply
 } -> {
@@ -103,12 +103,6 @@ POST /reply/createReply/{questionId} {
 	Unauthorized 401
 } | {
 	Not Found 404
-}
-```
-
-```
-POST /reply/upvote/{questionId} {
-	Authorization:  Bearer <access_token>
 }
 ```
 
@@ -127,7 +121,7 @@ POST /post/createPost {
 ```
 
 ```
-GET /post/getPost/{postId} {
+GET /post/getPostById/?postId={postId} {
 	Authorization: Bearer <access_token>
 } -> {
 	Success 200
@@ -140,7 +134,7 @@ GET /post/getPost/{postId} {
 ```
 
 ```
-POST /post/upvote/{postId} {
+POST /post/upvotePost/?postId={postId} {
 	Authorization: Bearer <access_token>
 } -> {
 	Success 200
@@ -151,7 +145,7 @@ POST /post/upvote/{postId} {
 ```
 
 ```
-POST /post/downvote/{postId} {
+POST /post/downvotePost/?postId={postId} {
 	Authorization: Bearer <access_token>
 } -> {
 	Success 200
@@ -171,6 +165,7 @@ GET /post/getAllPosts {
 }
 ```
 
+**Note:** When calling the endpoints: you will need to add to the URL an additional "auth" or "post" or whatever. This is because NGINX routes traffic through these locations via the API Gateway. So for example instead of having: `"/auth/loginUser"`, you are going to have `"/auth/auth/loginUser"`.
 ## Tech Stack
 
 The techologies I have picked for this project are as following:
@@ -188,6 +183,8 @@ The techologies I have picked for this project are as following:
 - **RabbitMQ** as the queueing solution
 
 - **NGINX** for the API Gateway and Rate Limiting
+
+- **Google Compute Engine** for deploying the solution
 
 #### 1. Users should be able to create an account and log in
 
@@ -304,12 +301,11 @@ The steps of setting up the account and the billing for GCP is beyond this tutor
 4. Next, you will need to create a new project via the CLI. You can do this by doing ```gcloud projects create [PROJECT_NAME]```.
 
 5. You will need to set the project id as the active project ```gcloud config set core/project [PROJECT_NAME]```. Google Cloud resources, including Compute Engine instances (VMs), are tied to a project.
-Each project serves as a container for all resources and configurations. When you create a VM, the gcloud CLI needs to know which project to associate the VM with.
-You will also be able to access your project and it's specific VMs via the Cloud Console.
+
+	Each project serves as a container for all resources and configurations. When you create a VM, the gcloud CLI needs to know which project to associate the VM with. You will also be able to access your project and it's specific VMs via the Cloud Console.
 
 6. Next, you will need to create a compute instance:
 
-	`
 ```
 	gcloud compute instances create INSTANCE_NAME \
     	--zone=ZONE \
@@ -319,20 +315,94 @@ You will also be able to access your project and it's specific VMs via the Cloud
     	--boot-disk-size=DISK_SIZE \
     	--network=NETWORK_NAME
 ```
-	`
+	
 
 **Note**: You can also create a new Instance from the UI from the Google Cloud Console.
 
 7. SSH into your Virtual Machine Instance
 
 ```
-```gcloud compute ssh [INSTANCE_NAME] --zone=[ZONE]```
+gcloud compute ssh [INSTANCE_NAME] --zone=[ZONE]
 ```
 									
+8. Once inside the VM, you will need to install docker and docker compose
+
+```
+sudo apt update 
+sudo apt install -y docker.io
+sudo usermod -aG docker $USER
+```
+
+For Docker compose, do the following
+
+```
+sudo apt install -y curl curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+```
+
+You will need to modify the permissions of the `docker-compose` binary file.
+
+```
+sudo chmod +x /usr/local/bin/docker-compose
+```
+
+Check the docker and the docker-compose installations
+
+```
+docker --version
+docker-compose --version
+```
+
+9. Clone the repository
+
+```
+git clone https://github.com/LucaPetrescu/stackverflow-backend.git
+```
+
+Change to the project directory
+
+```
+cd stackverflow-backend
+```
+
+**Very Important Note**: I made a typo while creating the git repo. So instead of *stackoverflow* is *stackverflow*. So be very careful with the names.
+
+10. Run the application
+
+Before running the application, please note this: You will manually need to install the node dependencies in each of the folders of the project. Why?
+
+I really tried to figure this problem our for a couple of hours, but couldn't understand why. Tried with all my might to figure out why but I didn't find a solution. Normally, each Dockerfile should install the required dependencies. Also asked some buddies of mine and they couldn't figure it out either.
+
+After all the dependencies are installed, you can use docker-compose.
+
+```
+sudo docker-compose up
+```
+
+**Very Important Note**: While starting up the containers, there will be some errors showing up. They are from the MongoDB authentication. This is because in the Mongo URI, I haven't included my password from my Mongo cluster for obvious security reasons.
+
+If you want to access the endpoints from your local machine, you can directly do:
+
+`http://<vm-ip>/auth/auth/<whatever-endpoint-you-want>` (you can include whatever service you want, not only the "/auth/auth" one)
+
+To get the IP of your instance, on your local machine do:
+
+```
+gcloud compute instances list
+```
+
+And look for the `EXTERNAL_IP`.
+
+To test from the local machine to see that the app is runing, you can do:
+
+`http://<vm-ip>/auth/auth/sayHello
+
+You should get a `Hello from this app` response with a `200 OK` Status code.
+
+Notice the port for each service is not needed beacuse of the NGINX instance running in the app.
 
 ## Personal notes
 
-I have tried my best to cover most of the assignment. In my opinion, this was quite a comprehensive task and it really gave me the opportunity to explore, learn and come up with different solutions for this design. I was already running behind schedule with 2-3 assignemnts at school, so I didn't have time to finish the writing of unit-tests entirely. I tried to focus on the core functionalities and providing a good architecture for the solution. Howevere, I managed to develop some unit tests for some of the important features of the app.
+I have tried my best to cover most of the assignment. In my opinion, this was quite a comprehensive task and it really gave me the opportunity to explore, learn and come up with different solutions for this design. I was already running behind schedule with 2 assignemnts at school, so I didn't have time to finish the writing of unit-tests entirely. I tried to focus on the core functionalities and providing a good architecture for the solution. However, I managed to develop some unit tests for some of the important features of the app. Also managed to deploy the app on GCP, more preciselt, GCE (Google Compute Engine)
 
 I really hope you will enjoy reading this document and also enjoy the code I have developed.
 
